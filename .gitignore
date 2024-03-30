@@ -96,3 +96,6 @@ ENV/
 
 # captcha
 .captcha.jpg
+
+# schedule
+.schedule.json
