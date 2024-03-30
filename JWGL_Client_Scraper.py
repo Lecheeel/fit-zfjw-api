@@ -84,8 +84,8 @@ class JWGLClient:
         return student_info
 
 if __name__ == "__main__":
-    account = '2301123104'
-    password = 'Ryancuee85173'
+    account = ''
+    password = ''
     base_url = 'http://oaa.fitedu.net/jwglxt'
     
     try:
