@@ -1,4 +1,4 @@
-## Fit ZFJW API
+## FIT ZFJW API
 
 ### 项目简介
 FIT ZFJW API 是一个用于FIT教务的Python API
