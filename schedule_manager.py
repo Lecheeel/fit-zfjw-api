@@ -102,13 +102,12 @@ def main():
     schedule_manager = ScheduleManager('schedule.json')
     # target_date = datetime.now().date()
     # print(target_date)
+    # target_time = datetime.now().replace(second=0, microsecond=0)
 
     target_date = datetime.strptime('2024-04-03', '%Y-%m-%d').date()
-
     target_time_str = "2024-04-03 09:00"
     target_time = datetime.strptime(target_time_str, '%Y-%m-%d %H:%M')
 
-    #target_time = datetime.now().replace(second=0, microsecond=0)
 
     # 获取指定日期的课程
     courses = schedule_manager.get_courses_on_date(target_date)
