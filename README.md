@@ -12,12 +12,12 @@ FIT ZFJW API 是一个用于FIT教务的Python API
 ### 使用方法
 1. 克隆仓库：
    ```bash
-   git clone https://github.com/Lecheeel/fit_zfjw_api.git
+   git clone https://github.com/Lecheeel/fit-zfjw-api.git
    ```
 
 2. 导入所需模块：
    ```python
-   from fit_zfjw_api import JWGLClient, ScheduleManager
+   from fit-zfjw-api import JWGLClient, ScheduleManager
    ```
 
 3. 使用基本 URL、账号和密码初始化 JWGLClient：
@@ -57,7 +57,7 @@ FIT ZFJW API 是一个用于FIT教务的Python API
 
 ### 示例
 ```python
-from fit_zfjw_api import JWGLClient, ScheduleManager
+from fit-zfjw-api import JWGLClient, ScheduleManager
 
 # 初始化 JWGLClient
 client = JWGLClient(base_url, account, password)
