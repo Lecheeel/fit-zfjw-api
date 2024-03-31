@@ -95,7 +95,7 @@ ENV/
 .ipynb_checkpoints/
 
 # captcha
-.captcha.jpg
+captcha.jpg
 
 # schedule
-.schedule.json
+schedule.json

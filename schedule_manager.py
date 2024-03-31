@@ -54,7 +54,13 @@ class ScheduleManager:
     def parse_weeks(self, week_string):
         weeks = []
         for part in week_string.split(','):
-            if '-' in part:
+            if '单' in part:
+                start, end = map(int, part.replace('(单)', '').split('-'))
+                weeks.extend(range(start, end + 1, 2))
+            elif '双' in part:
+                start, end = map(int, part.replace('(双)', '').split('-'))
+                weeks.extend(range(start, end + 1, 2))
+            elif '-' in part:
                 start, end = map(int, part.split('-'))
                 weeks.extend(range(start, end + 1))
             else:
@@ -94,9 +100,12 @@ class ScheduleManager:
 
 def main():
     schedule_manager = ScheduleManager('schedule.json')
-    target_date = datetime.now().date()
-    print(target_date   )
-    target_time_str = "2024-03-21 09:00"
+    # target_date = datetime.now().date()
+    # print(target_date)
+
+    target_date = datetime.strptime('2024-04-03', '%Y-%m-%d').date()
+
+    target_time_str = "2024-04-03 09:00"
     target_time = datetime.strptime(target_time_str, '%Y-%m-%d %H:%M')
 
     #target_time = datetime.now().replace(second=0, microsecond=0)
