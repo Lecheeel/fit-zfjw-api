@@ -23,7 +23,8 @@ class TestScheduleManagerWithJSON(unittest.TestCase):
     def setUp(self):
         self.mock_file = mock_open(read_data=self.json_str)
         self.open_name = 'builtins.open'
-        self.manager = None
+        with patch(self.open_name, self.mock_file):
+            self.manager = ScheduleManager('dummy_path')
 
     def test_load_schedule_from_json(self):
         with patch(self.open_name, self.mock_file):
