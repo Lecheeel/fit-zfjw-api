@@ -1,7 +1,8 @@
+import os
 import unittest
 from datetime import datetime, time
 from schedule_manager import Course, ScheduleManager
-import json
+import tempfile
 
 class TestScheduleManagerWithJSON(unittest.TestCase):
     def setUp(self):
@@ -51,8 +52,17 @@ class TestScheduleManagerWithJSON(unittest.TestCase):
             ]
         }
         """
-        self.schedule_data = json.loads(self.json_data)
-        self.manager = ScheduleManager(self.schedule_data)
+        with tempfile.NamedTemporaryFile(delete=False) as tf:
+            tf.write(self.json_data.encode())
+            self.temp_file_path = tf.name
+
+        self.manager = ScheduleManager(self.temp_file_path)
+
+    def tearDown(self):
+        os.unlink(self.temp_file_path)
+
+if __name__ == "__main__":
+    unittest.main()
 
     def test_load_schedule_from_json(self):
         self.assertIsInstance(self.manager.schedule, list)
