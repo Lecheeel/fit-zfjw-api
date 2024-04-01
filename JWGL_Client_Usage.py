@@ -3,8 +3,8 @@ from JWGL_Client import JWGLClient
 import json  # Import the json module
 
 # Define your account credentials and the base URL for the JWGL system
-account = 'your_account'
-password = 'your_password'
+account = ''
+password = ''
 base_url = 'http://oaa.fitedu.net/jwglxt'
 
 # Create an instance of the JWGLClient with your credentials
@@ -27,8 +27,10 @@ if main_page.status_code == 200:
 
     # Get the student info and print it
     info = client.get_info()
-    print('Student Info:', info)
-
+    print('Student Info:')
+    for key, value in info.items():
+        print(f"{key}  {value}")
+    
     # Save the student info to a local file
     with open('info.json', 'w') as f:
         json.dump(info, f)
