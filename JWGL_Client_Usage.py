@@ -2,6 +2,11 @@
 from JWGL_Client import JWGLClient
 import json  # Import the json module
 
+def save_to_file(data, filename, indent=None):
+    """Save data to a file with indentation."""
+    with open(filename, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=indent)
+
 # Define your account credentials and the base URL for the JWGL system
 account = ''
 password = ''
@@ -17,22 +22,27 @@ main_page = client.login()
 if main_page.status_code == 200:
     print('Login result: ok')
 
-    # Get the schedule and print it
-    schedule = client.get_schedule().json()
-    #print('Schedule:', schedule)
+    # Get the schedule
+    schedule_response = client.get_schedule()
 
-    # Save the schedule to a local file
-    with open('schedule.json', 'w') as f:
-        json.dump(schedule, f)
+    if schedule_response.status_code == 200:
+        schedule = schedule_response.json()
+        # print('Schedule:', schedule)
+        save_to_file(schedule, 'schedule.json', indent=4)
+        print("Schedule loaded and saved successfully.")
+    else:
+        print('Failed to get schedule:', schedule_response.status_code)
 
-    # Get the student info and print it
+    # Get the student info
     info = client.get_info()
-    print('Student Info:')
-    for key, value in info.items():
-        print(f"{key}  {value}")
-    
-    # Save the student info to a local file
-    with open('info.json', 'w') as f:
-        json.dump(info, f)
+
+    if info:
+        print('Student Info:')
+        for key, value in info.items():
+            print(f"{key} {value}")
+        # save_to_file(info, 'info.json', indent=4)
+        # print("Student info loaded and saved successfully.")
+    else:
+        print('Failed to get student info.')
 else:
     print('Login failed')
