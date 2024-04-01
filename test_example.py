@@ -3,70 +3,33 @@ import unittest
 from datetime import datetime, time
 from schedule_manager import Course, ScheduleManager
 import tempfile
+import json
+from unittest.mock import mock_open, patch
 
 class TestScheduleManagerWithJSON(unittest.TestCase):
-    def setUp(self):
-        self.json_data = """
-        {
+    @classmethod
+    def setUpClass(cls):
+        cls.json_data = {
             "kbList": [
-                {
-                    "zcd": "1-16周",
-                    "xqj": "1,3,5",
-                    "kcmc": "Mathematics",
-                    "xm": "John Doe",
-                    "cdmc": "Room 101",
-                    "jcs": "1-2节"
-                },
-                {
-                    "zcd": "1-16双周",
-                    "xqj": "2,4",
-                    "kcmc": "Physics",
-                    "xm": "Jane Doe",
-                    "cdmc": "Room 102",
-                    "jcs": "3-4节"
-                },
-                {
-                    "zcd": "1-16单周",
-                    "xqj": "1,3,5",
-                    "kcmc": "Chemistry",
-                    "xm": "Alice Smith",
-                    "cdmc": "Room 103",
-                    "jcs": "5-6节"
-                },
-                {
-                    "zcd": "1-16周",
-                    "xqj": "2,4",
-                    "kcmc": "Biology",
-                    "xm": "Bob Johnson",
-                    "cdmc": "Room 104",
-                    "jcs": "7-8节"
-                },
-                {
-                    "zcd": "1-16周",
-                    "xqj": "1,3,5",
-                    "kcmc": "Computer Science",
-                    "xm": "Charlie Brown",
-                    "cdmc": "Room 105",
-                    "jcs": "9-10节"
-                }
+                {"zcd": "1-16周", "xqj": "1,3,5", "kcmc": "Mathematics", "xm": "John Doe", "cdmc": "Room 101", "jcs": "1-2节"},
+                {"zcd": "1-16双周", "xqj": "2,4", "kcmc": "Physics", "xm": "Jane Doe", "cdmc": "Room 102", "jcs": "3-4节"},
+                {"zcd": "1-16单周", "xqj": "1,3,5", "kcmc": "Chemistry", "xm": "Alice Smith", "cdmc": "Room 103", "jcs": "5-6节"},
+                {"zcd": "1-16周", "xqj": "2,4", "kcmc": "Biology", "xm": "Bob Johnson", "cdmc": "Room 104", "jcs": "7-8节"},
+                {"zcd": "1-16周", "xqj": "1,3,5", "kcmc": "Computer Science", "xm": "Charlie Brown", "cdmc": "Room 105", "jcs": "9-10节"}
             ]
         }
-        """
-        with tempfile.NamedTemporaryFile(delete=False) as tf:
-            tf.write(self.json_data.encode())
-            self.temp_file_path = tf.name
+        cls.json_str = json.dumps(cls.json_data)
 
-        self.manager = ScheduleManager(self.temp_file_path)
-
-    def tearDown(self):
-        os.unlink(self.temp_file_path)
-
-if __name__ == "__main__":
-    unittest.main()
+    def setUp(self):
+        self.mock_file = mock_open(read_data=self.json_str)
+        self.open_name = 'builtins.open'
+        self.manager = None
 
     def test_load_schedule_from_json(self):
-        self.assertIsInstance(self.manager.schedule, list)
-        self.assertTrue(all(isinstance(course, Course) for course in self.manager.schedule))
+        with patch(self.open_name, self.mock_file):
+            self.manager = ScheduleManager('dummy_path')
+            self.assertIsInstance(self.manager.schedule, list)
+            self.assertTrue(all(isinstance(course, Course) for course in self.manager.schedule))
 
     def test_schedule_length(self):
         self.assertEqual(len(self.manager.schedule), 5)
@@ -93,6 +56,5 @@ if __name__ == "__main__":
     def test_get_current_period(self):
         period = self.manager.get_current_period(time(10, 30))
         self.assertIsInstance(period, int)
-
 if __name__ == "__main__":
     unittest.main()
