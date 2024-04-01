@@ -25,13 +25,13 @@ if main_page.status_code == 200:
     # Get the schedule
     schedule_response = client.get_schedule()
 
-    if schedule_response.status_code == 200:
+    try:
         schedule = schedule_response.json()
         # print('Schedule:', schedule)
         save_to_file(schedule, 'schedule.json', indent=4)
         print("Schedule loaded and saved successfully.")
-    else:
-        print('Failed to get schedule:', schedule_response.status_code)
+    except json.JSONDecodeError:
+        print('Failed to parse schedule:', schedule_response.text)
 
     # Get the student info
     info = client.get_info()
