@@ -89,13 +89,10 @@ class ScheduleManager:
         current_course = None
         next_courses = []
 
-        if current_period is None:
-            return None, courses
-
         for course in courses:
-            if current_period in course.periods:
+            if current_period is not None and current_period in course.periods:
                 current_course = course
-            elif max(course.periods) >= current_period:
+            elif current_period is None or min(course.periods) > current_period:
                 next_courses.append(course)
 
         return current_course, next_courses
@@ -131,40 +128,7 @@ def main():
             print(course.name)
     else:
         print("今天没有更多的课程了。")
-    # schedule_manager = ScheduleManager('schedule.json')
-    # target_date = datetime.now().date()
-    # target_time = datetime.now().replace(second=0, microsecond=0)
-
-    # # target_date = datetime.strptime('2024-04-03', '%Y-%m-%d').date()
-    # # target_time = datetime.strptime("2024-04-03 09:00", '%Y-%m-%d %H:%M')
-
-
-    # # 获取指定日期的课程
-    # courses = schedule_manager.get_courses_on_date(target_date)
-    # print(f"指定日期 {target_date} 要上的课程有：")
-    # for course in courses:
-    #     print(f"课程名称: {course.name}, 老师姓名: {course.teacher}, 教室名称: {course.classroom},  课程节数: {course.periods}")
-
-    # # 获取当前时间段
-    # current_period = schedule_manager.get_current_period(target_time)
-    # if current_period is not None:
-    #     print(f"当前是第{current_period}节课")
-    # else:
-    #     print("当前时间不在任何时间段内")
-
-    # # 检查目标时间是否有课程
-    # current_course, next_courses = schedule_manager.check_schedule_at_time(target_time)
-    # if current_course:
-    #     print(f"目标时间有课：{current_course.name}, {current_course.teacher}, {current_course.classroom},  {current_course.weekdays}, {current_course.periods}")
-    # else:
-    #     print("目标时间无课")
-
-    # if next_courses:
-    #     print("接下来的课程有：")
-    #     for course in next_courses:
-    #         print(f"课程名称: {course.name}, 老师姓名: {course.teacher}, 教室名称: {course.classroom},  课程节数: {course.periods}, {course.weekdays}")
-    # else:
-    #     print("全部课程已上完")
+    
 
 if __name__ == "__main__":
     main()
