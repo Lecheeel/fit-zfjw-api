@@ -58,7 +58,31 @@ class TestScheduleManagerWithJSON(unittest.TestCase):
         self.assertIsInstance(self.manager.schedule, list)
         self.assertTrue(all(isinstance(course, Course) for course in self.manager.schedule))
 
-    # Add more tests here...
+    def test_schedule_length(self):
+        self.assertEqual(len(self.manager.schedule), 5)
+
+    def test_course_attributes(self):
+        course = self.manager.schedule[0]
+        self.assertEqual(course.kcmc, "Mathematics")
+        self.assertEqual(course.xm, "John Doe")
+        self.assertEqual(course.cdmc, "Room 101")
+        self.assertEqual(course.jcs, "1-2节")
+
+    def test_get_courses_on_date(self):
+        courses = self.manager.get_courses_on_date(datetime.now().date())
+        self.assertIsInstance(courses, list)
+        self.assertTrue(all(isinstance(course, Course) for course in courses))
+
+    def test_check_schedule_at_time(self):
+        current_course, upcoming_courses = self.manager.check_schedule_at_time(datetime.now())
+        if current_course is not None:
+            self.assertIsInstance(current_course, Course)
+        self.assertIsInstance(upcoming_courses, list)
+        self.assertTrue(all(isinstance(course, Course) for course in upcoming_courses))
+
+    def test_get_current_period(self):
+        period = self.manager.get_current_period(time(10, 30))
+        self.assertIsInstance(period, int)
 
 if __name__ == "__main__":
     unittest.main()
