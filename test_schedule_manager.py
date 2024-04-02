@@ -4,7 +4,7 @@ from schedule_manager import ScheduleManager, Course
 
 class TestScheduleManager(unittest.TestCase):
     def setUp(self):
-        self.schedule_manager = ScheduleManager('path/to/schedule.json', start_date='2024-02-26')
+        self.schedule_manager = ScheduleManager('test_schedule.json', start_date='2024-02-26')
 
     def test_load_json(self):
         # Test loading JSON file
