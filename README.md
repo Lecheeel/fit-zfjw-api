@@ -55,6 +55,15 @@ FIT ZFJW API 是一个用于FIT教务的Python API
      ```python
      current_course, next_courses = schedule_manager.check_schedule_at_time(target_time)
      ```
+   - 获取特定时间的课程：
+      ```python
+      current_course = schedule_manager.get_course(target_time)
+      ```
+
+   - 获取特定时间之后的所有课程：
+      ```python
+      next_courses = schedule_manager.get_next_courses(target_time)
+      ```
 
 ### 示例
 ```python
