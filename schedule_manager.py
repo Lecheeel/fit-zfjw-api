@@ -15,6 +15,11 @@ class Course:
 
     def __repr__(self):
         return f"Course({self.name}, {self.teacher}, {self.classroom}, {self.weekdays}, {self.periods})"
+    
+    def get_start_time(self, schedule_manager):
+        start_period = min(self.periods)
+        return schedule_manager.TIME_PERIODS[start_period][0]
+
 
 class ScheduleManager:
     TIME_PERIODS = {
@@ -33,11 +38,11 @@ class ScheduleManager:
     START_DATE = "2024-02-26"
 
     def __init__(self, file_path, start_date=START_DATE):
-        self.schedule = self.load_schedule_from_json(file_path)
+        self.schedule = self.load_json(file_path)
         self.start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
         self.weeks_diff = (datetime.now().date() - self.start_date).days // 7 + 1
 
-    def load_schedule_from_json(self, file_path):
+    def load_json(self, file_path):
         file_path = Path(file_path)
         if not file_path.exists():
             logging.error(f"File '{file_path}' not found.")
@@ -82,22 +87,22 @@ class ScheduleManager:
         target_day_of_week = target_date.isoweekday()
         return [course for course in self.schedule if self.is_date_in_course_weeks(target_date, course) and target_day_of_week in course.weekdays]
 
-    def check_schedule_at_time(self, target_time):
-        current_period = self.get_current_period(target_time)
+    
+    def get_course(self, target_time):
+        current_period = self.get_period(target_time)
         target_date = target_time.date()
         courses = self.get_courses_on_date(target_date)
-        current_course = None
-        next_courses = []
-
         for course in courses:
             if current_period is not None and current_period in course.periods:
-                current_course = course
-            elif current_period is None or min(course.periods) > current_period:
-                next_courses.append(course)
+                return course
+        return None
 
-        return current_course, next_courses
+    def get_next_courses(self, target_time):
+        target_date = target_time.date()
+        courses = self.get_courses_on_date(target_date)
+        return [course for course in courses if course.get_start_time(self) > target_time.time()]
 
-    def get_current_period(self, target_time):
+    def get_period(self, target_time):
         current_time = target_time.time()
         for period, (start_time, end_time) in self.TIME_PERIODS.items():
             if start_time <= current_time <= end_time:
@@ -109,21 +114,23 @@ def main():
     manager = ScheduleManager("schedule.json")
 
     # 获取当前日期的课程
-    courses_today = manager.get_courses_on_date(datetime.now().date())
+    courses_today = manager.get_courses_on_date(datetime(2024,4,2).date())
     print("----------今天的课程----------")
     for course in courses_today:
         print(course.name)
 
     # 检查当前时间的课程
     print('----------当前时间的课程----------')
-    current_course, next_courses = manager.check_schedule_at_time(datetime.now())
+    current_time = datetime(2024,4,2,12,30)
+    current_course = manager.get_course(current_time)
     if current_course:
         print(f"当前课程：{current_course.name}")
     else:
         print("当前没有课程。")
 
+    print("----------接下来的课程----------")
+    next_courses = manager.get_next_courses(current_time)
     if next_courses:
-        print("----------接下来的课程----------")
         for course in next_courses:
             print(course.name)
     else:
