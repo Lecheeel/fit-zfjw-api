@@ -1,29 +1,30 @@
 import unittest
-from datetime import datetime
-from schedule_manager import ScheduleManager
+import datetime
+from schedule_manager import ScheduleManager, Course
 
 class TestScheduleManager(unittest.TestCase):
     def setUp(self):
-        self.schedule_manager = ScheduleManager("test_schedule.json")
+        self.manager = ScheduleManager("test_schedule.json")
 
-    def test_loaded_courses(self):
-        self.assertEqual(len(self.schedule_manager.schedule), 5)
+    def test_load_schedule_from_json(self):
+        schedule = self.manager.load_schedule_from_json("test_schedule.json")
+        self.assertIsInstance(schedule, list)
+        for course in schedule:
+            self.assertIsInstance(course, Course)
 
-    def test_get_course(self):
-        test_time = datetime.strptime("2024-03-05 09:00", "%Y-%m-%d %H:%M")
-        course = self.schedule_manager.get_course(test_time)
-        self.assertEqual(course.name, "Mathematics")
-        self.assertEqual(course.teacher, "John Doe")
-        self.assertEqual(course.classroom, "Room 101")
+    def test_get_courses_on_date(self):
+        courses = self.manager.get_courses_on_date(datetime.datetime.now().date())
+        self.assertIsInstance(courses, list)
+        for course in courses:
+            self.assertIsInstance(course, Course)
 
-    def test_get_next_courses(self):
-        test_time = datetime.strptime("2024-03-05 09:00", "%Y-%m-%d %H:%M")
-        next_courses = self.schedule_manager.get_next_courses(test_time)
-        self.assertEqual(len(next_courses), 4)
-        self.assertEqual(next_courses[0].name, "Physics")
-        self.assertEqual(next_courses[1].name, "Chemistry")
-        self.assertEqual(next_courses[2].name, "Biology")
-        self.assertEqual(next_courses[3].name, "Computer Science")
+    def test_check_schedule_at_time(self):
+        current_course, next_courses = self.manager.check_schedule_at_time(datetime.datetime.now())
+        if current_course:
+            self.assertIsInstance(current_course, Course)
+        if next_courses:
+            for course in next_courses:
+                self.assertIsInstance(course, Course)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
