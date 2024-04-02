@@ -9,7 +9,8 @@ FIT ZFJW API 是一个用于FIT教务的Python API
 - RSA 库 (`pip install rsa`)
 - PyQuery 库 (`pip install pyquery`)
 
-### 使用方法
+### 使用说明
+
 1. 克隆仓库：
    ```bash
    git clone https://github.com/Lecheeel/fit-zfjw-api.git
@@ -77,8 +78,11 @@ schedule_manager = ScheduleManager('schedule.json')
 # 获取特定日期的课程
 courses = schedule_manager.get_courses_on_date(target_date)
 
-# 检查特定时间的课程安排
-current_course, next_courses = schedule_manager.check_schedule_at_time(target_time)
+# 获取特定时间的课程
+current_course = schedule_manager.get_course(target_time)
+
+# 获取特定时间之后的所有课程
+next_courses = schedule_manager.get_next_courses(target_time)
 ```
 
 ### 注意
