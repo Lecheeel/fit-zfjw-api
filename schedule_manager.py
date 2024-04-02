@@ -108,20 +108,63 @@ class ScheduleManager:
             if start_time <= current_time <= end_time:
                 return period
         return None
-
+    # {
+    #     "kbList": [
+    #         {
+    #             "zcd": "1-16周",
+    #             "xqj": "1,3,5",
+    #             "kcmc": "Mathematics",
+    #             "xm": "John Doe",
+    #             "cdmc": "Room 101",
+    #             "jcs": "1-2节"
+    #         },
+    #         {
+    #             "zcd": "2-8周(双),12-16周(双),17周",
+    #             "xqj": "2,4",
+    #             "kcmc": "Physics",
+    #             "xm": "Jane Doe",
+    #             "cdmc": "Room 102",
+    #             "jcs": "3-4节"
+    #         },
+    #         {
+    #             "zcd": "1-3周(单),4-5周,7-11周",
+    #             "xqj": "1,3,5",
+    #             "kcmc": "Chemistry",
+    #             "xm": "Alice Smith",
+    #             "cdmc": "Room 103",
+    #             "jcs": "5-6节"
+    #         },
+    #         {
+    #             "zcd": "1-16周",
+    #             "xqj": "2,4",
+    #             "kcmc": "Biology",
+    #             "xm": "Bob Johnson",
+    #             "cdmc": "Room 104",
+    #             "jcs": "7-8节"
+    #         },
+    #         {
+    #             "zcd": "1-16周",
+    #             "xqj": "1,3,5",
+    #             "kcmc": "Computer Science",
+    #             "xm": "Charlie Brown",
+    #             "cdmc": "Room 105",
+    #             "jcs": "9-10节"
+    #         }
+    #     ]
+    # }
 def main():
     # 创建 ScheduleManager 实例
-    manager = ScheduleManager("schedule.json")
+    manager = ScheduleManager("test_schedule.json")
 
     # 获取当前日期的课程
-    courses_today = manager.get_courses_on_date(datetime(2024,4,2).date())
+    courses_today = manager.get_courses_on_date(datetime(2024,3,19).date())
     print("----------今天的课程----------")
     for course in courses_today:
         print(course.name)
 
     # 检查当前时间的课程
     print('----------当前时间的课程----------')
-    current_time = datetime(2024,4,2,12,30)
+    current_time = datetime(2024,3,19,12,30)
     current_course = manager.get_course(current_time)
     if current_course:
         print(f"当前课程：{current_course.name}")
