@@ -26,5 +26,35 @@ class TestScheduleManager(unittest.TestCase):
             for course in next_courses:
                 self.assertIsInstance(course, Course)
 
+    def test_is_date_in_course_weeks(self):
+        target_date = datetime.date(2024, 2, 28)
+        course = Course([1, 3, 5], [1, 3, 5], "Math", "John Doe", "Room 101", [1, 2, 3])
+        result = self.manager.is_date_in_course_weeks(target_date, course)
+        self.assertTrue(result)
+
+    def test_get_courses_on_date(self):
+        target_date = datetime.date(2024, 2, 28)
+        courses = self.manager.get_courses_on_date(target_date)
+        self.assertIsInstance(courses, list)
+        for course in courses:
+            self.assertIsInstance(course, Course)
+
+    def test_get_course(self):
+        target_time = datetime.datetime(2024, 2, 28, 9, 0)
+        course = self.manager.get_course(target_time)
+        self.assertIsInstance(course, Course)
+
+    def test_get_next_courses(self):
+        target_time = datetime.datetime(2024, 2, 28, 9, 0)
+        next_courses = self.manager.get_next_courses(target_time)
+        self.assertIsInstance(next_courses, list)
+        for course in next_courses:
+            self.assertIsInstance(course, Course)
+
+    def test_get_period(self):
+        target_time = datetime.datetime(2024, 2, 28, 9, 0)
+        period = self.manager.get_period(target_time)
+        self.assertIsInstance(period, int)
+
 if __name__ == "__main__":
     unittest.main()
