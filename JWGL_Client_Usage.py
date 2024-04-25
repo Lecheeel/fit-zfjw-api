@@ -8,8 +8,8 @@ def save_to_file(data, filename, indent=None):
         json.dump(data, f, ensure_ascii=False, indent=indent)
 
 # Define your account credentials and the base URL for the JWGL system
-account = ''
-password = ''
+account = '2301123104'
+password = 'Ryancuee85173'
 base_url = 'http://oaa.fitedu.net/jwglxt'
 
 # Create an instance of the JWGLClient with your credentials

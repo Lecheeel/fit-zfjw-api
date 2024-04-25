@@ -4,10 +4,10 @@ from schedule_manager import ScheduleManager, Course
 
 class TestScheduleManagerMethods(unittest.TestCase):
     def setUp(self):
-        self.manager = ScheduleManager("test_schedule.json")
+        self.manager = ScheduleManager("schedule.json")
 
     def test_load_json(self):
-        schedule = self.manager.load_json("test_schedule.json")
+        schedule = self.manager.load_json("schedule.json")
         self.assertIsInstance(schedule, list)
         for course in schedule:
             self.assertIsInstance(course, Course)

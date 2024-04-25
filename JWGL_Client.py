@@ -82,28 +82,3 @@ class JWGLClient:
 
         student_info = {key: value for key, value in student_info.items() if value}
         return student_info
-
-if __name__ == "__main__":
-    account = ''
-    password = ''
-    base_url = 'http://oaa.fitedu.net/jwglxt'
-    
-    try:
-        client = JWGLClient(base_url, account, password)
-        main_page = client.login()
-        if main_page.status_code == 200:
-            print('Login result: ok')
-
-            schedule = json.loads(client.get_schedule().text)
-            #print(schedule.text)
-            file_path = "schedule.json"
-            # 写入文件，指定编码为 UTF-8
-            with open(file_path, "w", encoding="utf-8") as file:
-                json.dump(schedule, file, ensure_ascii=False, indent=4)
-
-            info = client.get_info()
-            for key, value in info.items():
-                print(f"{key}{value}")
-
-    except (requests.RequestException, Exception) as e:
-        print('An error occurred during the request:', e)

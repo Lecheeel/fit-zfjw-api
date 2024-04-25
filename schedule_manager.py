@@ -23,17 +23,28 @@ class Course:
 
 class ScheduleManager:
     TIME_PERIODS = {
+        # 1: (time(8, 30), time(9, 15)),
+        # 2: (time(9, 20), time(10, 5)),
+        # 3: (time(10, 20), time(11, 5)),
+        # 4: (time(11, 10), time(11, 55)),
+        # 5: (time(14, 0), time(14, 45)),
+        # 6: (time(14, 50), time(15, 35)),
+        # 7: (time(15, 45), time(16, 30)),
+        # 8: (time(16, 35), time(17, 20)),
+        # 9: (time(18, 30), time(19, 15)),
+        # 10: (time(19, 25), time(20, 10)),
+        # 11: (time(20, 20), time(21, 5))
         1: (time(8, 30), time(9, 15)),
-        2: (time(9, 20), time(10, 5)),
-        3: (time(10, 20), time(11, 5)),
-        4: (time(11, 10), time(11, 55)),
+        2: (time(9, 15), time(10, 5)),
+        3: (time(10, 5), time(11, 5)),
+        4: (time(11, 5), time(11, 55)),
         5: (time(14, 0), time(14, 45)),
-        6: (time(14, 50), time(15, 35)),
-        7: (time(15, 45), time(16, 30)),
-        8: (time(16, 35), time(17, 20)),
-        9: (time(18, 30), time(19, 15)),
-        10: (time(19, 25), time(20, 10)),
-        11: (time(20, 20), time(21, 5))
+        6: (time(14, 45), time(15, 35)),
+        7: (time(15, 35), time(16, 30)),
+        8: (time(16, 30), time(17, 20)),
+        9: (time(17, 20), time(19, 15)),
+        10: (time(19, 15), time(20, 10)),
+        11: (time(20, 10), time(21, 5))
     }
     START_DATE = "2024-02-26"
 
@@ -87,11 +98,12 @@ class ScheduleManager:
         target_day_of_week = target_date.isoweekday()
         return [course for course in self.schedule if self.is_date_in_course_weeks(target_date, course) and target_day_of_week in course.weekdays]
 
-    
-    def get_course(self, target_time):
-        current_period = self.get_period(target_time)
+    def get_course(self, target_time=None):
+        if target_time is None:
+            target_time = datetime.datetime.now()
         target_date = target_time.date()
         courses = self.get_courses_on_date(target_date)
+        current_period = self.get_period(target_time)
         for course in courses:
             if current_period is not None and current_period in course.periods:
                 return course
@@ -108,77 +120,3 @@ class ScheduleManager:
             if start_time <= current_time <= end_time:
                 return period
         return None
-    # {
-    #     "kbList": [
-    #         {
-    #             "zcd": "1-16周",
-    #             "xqj": "1,3,5",
-    #             "kcmc": "Mathematics",
-    #             "xm": "John Doe",
-    #             "cdmc": "Room 101",
-    #             "jcs": "1-2节"
-    #         },
-    #         {
-    #             "zcd": "2-8周(双),12-16周(双),17周",
-    #             "xqj": "2,4",
-    #             "kcmc": "Physics",
-    #             "xm": "Jane Doe",
-    #             "cdmc": "Room 102",
-    #             "jcs": "3-4节"
-    #         },
-    #         {
-    #             "zcd": "1-3周(单),4-5周,7-11周",
-    #             "xqj": "1,3,5",
-    #             "kcmc": "Chemistry",
-    #             "xm": "Alice Smith",
-    #             "cdmc": "Room 103",
-    #             "jcs": "5-6节"
-    #         },
-    #         {
-    #             "zcd": "1-16周",
-    #             "xqj": "2,4",
-    #             "kcmc": "Biology",
-    #             "xm": "Bob Johnson",
-    #             "cdmc": "Room 104",
-    #             "jcs": "7-8节"
-    #         },
-    #         {
-    #             "zcd": "1-16周",
-    #             "xqj": "1,3,5",
-    #             "kcmc": "Computer Science",
-    #             "xm": "Charlie Brown",
-    #             "cdmc": "Room 105",
-    #             "jcs": "9-10节"
-    #         }
-    #     ]
-    # }
-def main():
-    # 创建 ScheduleManager 实例
-    manager = ScheduleManager("test_schedule.json")
-
-    # 获取当前日期的课程
-    courses_today = manager.get_courses_on_date(datetime(2024,3,19).date())
-    print("----------今天的课程----------")
-    for course in courses_today:
-        print(course.name)
-
-    # 检查当前时间的课程
-    print('----------当前时间的课程----------')
-    current_time = datetime(2024,3,19,12,30)
-    current_course = manager.get_course(current_time)
-    if current_course:
-        print(f"当前课程：{current_course.name}")
-    else:
-        print("当前没有课程。")
-
-    print("----------接下来的课程----------")
-    next_courses = manager.get_next_courses(current_time)
-    if next_courses:
-        for course in next_courses:
-            print(course.name)
-    else:
-        print("今天没有更多的课程了。")
-    
-
-if __name__ == "__main__":
-    main()
