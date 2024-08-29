@@ -3,7 +3,7 @@ import logging
 from datetime import datetime, time
 from pathlib import Path
 import re
-from configs.settings import TIME_PERIODS, START_DATE
+from .configs.settings import TIME_PERIODS, START_DATE
 
 class Course:
     def __init__(self, weeks, weekdays, name, teacher, classroom, periods):

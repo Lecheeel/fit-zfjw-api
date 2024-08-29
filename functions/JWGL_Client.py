@@ -3,7 +3,7 @@ import rsa
 import binascii
 from pyquery import PyQuery as pq
 from io import BytesIO
-from utils.ddddocr import DdddOcr
+from .utils.ddddocr import DdddOcr
 import logging
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
