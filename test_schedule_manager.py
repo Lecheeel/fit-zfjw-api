@@ -3,68 +3,18 @@ import json
 import os
 from datetime import datetime
 from functions.schedule_manager import ScheduleManager
-
-# Define a sample schedule JSON for testing
-SCHEDULE_JSON = '''
-{
-    "kbList": [
-        {
-            "zcd": "1-16 weeks",
-            "xqj": "1,3,5",
-            "kcmc": "Mathematics",
-            "xm": "John Doe",
-            "cdmc": "Room 101",
-            "jcs": "1-2 periods"
-        },
-        {
-            "zcd": "2-8 weeks (even), 12-16 weeks (even), 17th week",
-            "xqj": "2,4",
-            "kcmc": "Physics",
-            "xm": "Jane Doe",
-            "cdmc": "Room 102",
-            "jcs": "3-4 periods"
-        },
-        {
-            "zcd": "1-3 weeks (odd), 4-5 weeks, 7-11 weeks",
-            "xqj": "1,3,5",
-            "kcmc": "Chemistry",
-            "xm": "Alice Smith",
-            "cdmc": "Room 103",
-            "jcs": "5-6 periods"
-        },
-        {
-            "zcd": "1-16 weeks",
-            "xqj": "2,4",
-            "kcmc": "Biology",
-            "xm": "Bob Johnson",
-            "cdmc": "Room 104",
-            "jcs": "7-8 periods"
-        },
-        {
-            "zcd": "1-16 weeks",
-            "xqj": "1,3,5",
-            "kcmc": "Computer Science",
-            "xm": "Charlie Brown",
-            "cdmc": "Room 105",
-            "jcs": "9-10 periods"
-        }
-    ]
-}
-'''
+from functions.configs.settings import START_DATE
 
 class TestScheduleManager(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        """Create a sample schedule JSON file before running tests."""
-        with open('data/schedule.json', 'w') as file:
-            file.write(SCHEDULE_JSON)
-        cls.manager = ScheduleManager("data/schedule.json", start_date="2024-08-26")
+        cls.manager = ScheduleManager("data/test_schedule.json", start_date=START_DATE)
 
     @classmethod
     def tearDownClass(cls):
         """Remove the sample schedule JSON file after tests."""
-        os.remove('data/schedule.json')
+        # os.remove('data/schedule.json')
 
     def test_get_courses_on_date(self):
         """Test fetching courses on a specific date."""
