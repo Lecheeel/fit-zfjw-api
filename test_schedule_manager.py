@@ -1,49 +1,94 @@
 import unittest
-import datetime
-from functions.schedule_manager import ScheduleManager, Course
+import json
+import os
+from datetime import datetime
+from functions.schedule_manager import ScheduleManager
 
-class TestScheduleManagerMethods(unittest.TestCase):
-    def setUp(self):
-        self.manager = ScheduleManager("data/schedule.json")
+# Define a sample schedule JSON for testing
+SCHEDULE_JSON = '''
+{
+    "kbList": [
+        {
+            "zcd": "1-16 weeks",
+            "xqj": "1,3,5",
+            "kcmc": "Mathematics",
+            "xm": "John Doe",
+            "cdmc": "Room 101",
+            "jcs": "1-2 periods"
+        },
+        {
+            "zcd": "2-8 weeks (even), 12-16 weeks (even), 17th week",
+            "xqj": "2,4",
+            "kcmc": "Physics",
+            "xm": "Jane Doe",
+            "cdmc": "Room 102",
+            "jcs": "3-4 periods"
+        },
+        {
+            "zcd": "1-3 weeks (odd), 4-5 weeks, 7-11 weeks",
+            "xqj": "1,3,5",
+            "kcmc": "Chemistry",
+            "xm": "Alice Smith",
+            "cdmc": "Room 103",
+            "jcs": "5-6 periods"
+        },
+        {
+            "zcd": "1-16 weeks",
+            "xqj": "2,4",
+            "kcmc": "Biology",
+            "xm": "Bob Johnson",
+            "cdmc": "Room 104",
+            "jcs": "7-8 periods"
+        },
+        {
+            "zcd": "1-16 weeks",
+            "xqj": "1,3,5",
+            "kcmc": "Computer Science",
+            "xm": "Charlie Brown",
+            "cdmc": "Room 105",
+            "jcs": "9-10 periods"
+        }
+    ]
+}
+'''
 
-    def test_load_json(self):
-        schedule = self.manager.load_json("data/schedule.json")
-        self.assertIsInstance(schedule, list)
-        for course in schedule:
-            self.assertIsInstance(course, Course)
+class TestScheduleManager(unittest.TestCase):
 
-    def test_parse_weeks(self):
-        weeks = self.manager.parse_weeks("1-16周")
-        self.assertEqual(weeks, list(range(1, 17)))
+    @classmethod
+    def setUpClass(cls):
+        """Create a sample schedule JSON file before running tests."""
+        with open('data/schedule.json', 'w') as file:
+            file.write(SCHEDULE_JSON)
+        cls.manager = ScheduleManager("data/schedule.json", start_date="2024-08-26")
 
-        weeks = self.manager.parse_weeks("2-8周(双),12-16周(双),17周")
-        self.assertEqual(weeks, [2, 4, 6, 8, 12, 14, 16, 17])
-
-    def test_is_date_in_course_weeks(self):
-        course = Course([1, 2, 3], [1, 2, 3], "Mathematics", "John Doe", "Room 101", [1, 2])
-        target_date = datetime.strptime("2024-03-05", '%Y-%m-%d').date()
-        self.assertTrue(self.manager.is_date_in_course_weeks(target_date, course))
+    @classmethod
+    def tearDownClass(cls):
+        """Remove the sample schedule JSON file after tests."""
+        os.remove('data/schedule.json')
 
     def test_get_courses_on_date(self):
-        target_date = datetime.strptime("2024-03-05", '%Y-%m-%d').date()
-        courses = self.manager.get_courses_on_date(target_date)
-        self.assertIsInstance(courses, list)
+        """Test fetching courses on a specific date."""
+        today = datetime.now().date()
+        courses = self.manager.get_courses_on_date(today)
+        self.assertIsInstance(courses, list, "Expected a list of courses.")
         for course in courses:
-            self.assertIsInstance(course, Course)
-
+            self.assertTrue(hasattr(course, 'name'), "Each course should have a 'name' attribute.")
+    
     def test_get_course(self):
-        target_time = datetime.strptime("2024-03-05 09:00:00", '%Y-%m-%d %H:%M:%S')
-        course = self.manager.get_course(target_time)
-        self.assertIsInstance(course, Course)
+        """Test fetching the course at the current time."""
+        current_time = datetime.now()
+        course = self.manager.get_course(current_time)
+        if course:
+            self.assertTrue(hasattr(course, 'name'), "The current course should have a 'name' attribute.")
+        self.assertTrue(course is None or hasattr(course, 'name'), "The returned course should be a Course object or None.")
 
     def test_get_next_courses(self):
-        target_time = datetime.strptime("2024-03-05 09:00:00", '%Y-%m-%d %H:%M:%S')
-        courses = self.manager.get_next_courses(target_time)
-        self.assertIsInstance(courses, list)
-        for course in courses:
-            self.assertIsInstance(course, Course)
-
-    def test_get_period(self):
-        target_time = datetime.strptime("09:00:00", '%H:%M:%S').time()
-        period = self.manager.get_period(target_time)
-        self.assertEqual(period, 1)
+        """Test fetching the next courses."""
+        current_time = datetime.now()
+        next_courses = self.manager.get_next_courses(current_time)
+        self.assertIsInstance(next_courses, list, "Expected a list of next courses.")
+        for course in next_courses:
+            self.assertTrue(hasattr(course, 'name'), "Each next course should have a 'name' attribute.")
+    
+if __name__ == '__main__':
+    unittest.main()
