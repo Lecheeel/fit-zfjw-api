@@ -17,6 +17,15 @@ def load_from_file(filename):
     """Load data from a file."""
     with open(filename, 'r', encoding='utf-8') as f:
         return json.load(f)
+    
+def course_to_dict(course):
+    return {
+        'name': course.name,
+        'teacher': course.teacher,
+        'classroom': course.classroom,
+        'weekdays': list(course.weekdays),
+        'periods': course.periods
+    }
 
 @app.route('/get_courses', methods=['POST'])
 def get_courses():
@@ -51,7 +60,8 @@ def get_courses():
     # Perform the requested action
     if action == "today":
         courses_today = manager.get_courses_on_date(datetime.now().date())
-        return jsonify({'courses_today': [course.name for course in courses_today]})
+        courses_today_dict = [course_to_dict(course) for course in courses_today]
+        return jsonify(courses_today_dict)
     
     elif action == "current":
         current_time = datetime.now()
@@ -71,7 +81,8 @@ def get_courses():
         if specific_date:
             date = datetime.strptime(specific_date, '%Y-%m-%d').date()
             courses_on_date = manager.get_courses_on_date(date)
-            return jsonify({'courses_on_date': [course.name for course in courses_on_date]})
+            courses_today_dict = [course_to_dict(course) for course in courses_on_date]
+            return jsonify(courses_today_dict)
         else:
             return jsonify({'error': 'Date not provided'}), 400
 

@@ -9,7 +9,8 @@ courses_today = manager.get_courses_on_date(datetime.now().date())
 #manager.get_courses_on_date(datetime(2024,4,10).date())
 print("----------今天的课程----------")
 for course in courses_today:
-    print(course.name)
+    #return f"Course({self.name}, {self.teacher}, {self.classroom}, {self.weekdays}, {self.periods})"
+    print(course)
 
 # 检查当前时间的课程
 print('----------当前时间的课程----------')
