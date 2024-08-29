@@ -2,7 +2,7 @@ import requests
 import json
 
 def get_courses(username, password, action, relogin=False, date=None):
-    url = 'http://127.0.0.1:5000/get_courses'
+    url = 'http://0.0.0.0:5000/get_courses'
     headers = {'Content-Type': 'application/json'}
     data = {
         'username': username,
