@@ -1,13 +1,13 @@
 import unittest
 import datetime
-from schedule_manager import ScheduleManager, Course
+from functions.schedule_manager import ScheduleManager, Course
 
 class TestScheduleManagerMethods(unittest.TestCase):
     def setUp(self):
-        self.manager = ScheduleManager("schedule.json")
+        self.manager = ScheduleManager("data/schedule.json")
 
     def test_load_json(self):
-        schedule = self.manager.load_json("schedule.json")
+        schedule = self.manager.load_json("data/schedule.json")
         self.assertIsInstance(schedule, list)
         for course in schedule:
             self.assertIsInstance(course, Course)

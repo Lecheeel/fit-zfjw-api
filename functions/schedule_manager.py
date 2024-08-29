@@ -3,6 +3,7 @@ import logging
 from datetime import datetime, time
 from pathlib import Path
 import re
+from .configs.settings import TIME_PERIODS, START_DATE
 
 class Course:
     def __init__(self, weeks, weekdays, name, teacher, classroom, periods):
@@ -18,36 +19,10 @@ class Course:
     
     def get_start_time(self, schedule_manager):
         start_period = min(self.periods)
-        return schedule_manager.TIME_PERIODS[start_period][0]
+        return TIME_PERIODS[start_period][0]
 
 
 class ScheduleManager:
-    TIME_PERIODS = {
-        # 1: (time(8, 30), time(9, 15)),
-        # 2: (time(9, 20), time(10, 5)),
-        # 3: (time(10, 20), time(11, 5)),
-        # 4: (time(11, 10), time(11, 55)),
-        # 5: (time(14, 0), time(14, 45)),
-        # 6: (time(14, 50), time(15, 35)),
-        # 7: (time(15, 45), time(16, 30)),
-        # 8: (time(16, 35), time(17, 20)),
-        # 9: (time(18, 30), time(19, 15)),
-        # 10: (time(19, 25), time(20, 10)),
-        # 11: (time(20, 20), time(21, 5))
-        1: (time(8, 30), time(9, 15)),
-        2: (time(9, 15), time(10, 5)),
-        3: (time(10, 5), time(11, 5)),
-        4: (time(11, 5), time(11, 55)),
-        5: (time(14, 0), time(14, 45)),
-        6: (time(14, 45), time(15, 35)),
-        7: (time(15, 35), time(16, 30)),
-        8: (time(16, 30), time(17, 20)),
-        9: (time(17, 20), time(19, 15)),
-        10: (time(19, 15), time(20, 10)),
-        11: (time(20, 10), time(21, 5))
-    }
-    START_DATE = "2024-02-26"
-
     def __init__(self, file_path, start_date=START_DATE):
         self.schedule = self.load_json(file_path)
         self.start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
@@ -116,7 +91,7 @@ class ScheduleManager:
 
     def get_period(self, target_time):
         current_time = target_time.time()
-        for period, (start_time, end_time) in self.TIME_PERIODS.items():
+        for period, (start_time, end_time) in TIME_PERIODS.items():
             if start_time <= current_time <= end_time:
                 return period
         return None

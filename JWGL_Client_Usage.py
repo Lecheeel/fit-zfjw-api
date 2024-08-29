@@ -1,5 +1,6 @@
 # Import the JWGLClient class from the JWGL_Client module
-from JWGL_Client import JWGLClient
+from functions.JWGL_Client import JWGLClient
+from functions.configs.settings import BASE_URL
 import json  # Import the json module
 
 def save_to_file(data, filename, indent=None):
@@ -10,10 +11,9 @@ def save_to_file(data, filename, indent=None):
 # Define your account credentials and the base URL for the JWGL system
 account = '2301123104'
 password = 'Ryancuee85173'
-base_url = 'http://oaa.fitedu.net/jwglxt'
 
 # Create an instance of the JWGLClient with your credentials
-client = JWGLClient(base_url, account, password)
+client = JWGLClient(BASE_URL, account, password)
 
 # Attempt to login
 main_page = client.login()
@@ -28,7 +28,7 @@ if main_page.status_code == 200:
     try:
         schedule = schedule_response.json()
         # print('Schedule:', schedule)
-        save_to_file(schedule, 'schedule.json', indent=4)
+        save_to_file(schedule, 'data/schedule.json', indent=4)
         print("Schedule loaded and saved successfully.")
     except json.JSONDecodeError:
         print('Failed to parse schedule:', schedule_response.text)

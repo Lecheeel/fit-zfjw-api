@@ -3,7 +3,7 @@ import rsa
 import binascii
 from pyquery import PyQuery as pq
 from io import BytesIO
-import ddddocr
+from .utils.ddddocr import DdddOcr
 import logging
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -49,7 +49,7 @@ class JWGLClient:
 
     def get_captcha(self):
         try:
-            ocr = ddddocr.DdddOcr()
+            ocr = DdddOcr()
             res = self.session.get(self.captcha_url, headers=self.headers)
             res.raise_for_status()
             with BytesIO(res.content) as image_stream:

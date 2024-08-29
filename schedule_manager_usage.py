@@ -1,7 +1,7 @@
-from schedule_manager import ScheduleManager
+from functions.schedule_manager import ScheduleManager
 from datetime import datetime, time
 # 创建 ScheduleManager 实例
-manager = ScheduleManager("2301123104.json",start_date="2024-02-26")
+manager = ScheduleManager("data/schedule.json",start_date="2024-08-26")
 
 # 获取当前日期的课程
 #courses_today = manager.get_courses_on_date(datetime(2024,4,17).date())
