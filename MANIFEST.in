@@ -1,0 +1,10 @@
+include README.md
+include LICENSE
+include requirements.txt
+include pyproject.toml
+recursive-include fit_zfjw_api *.py
+recursive-include fit_zfjw_api/utils *
+recursive-include fit_zfjw_api/configs *.py
+recursive-include examples *.py
+global-exclude __pycache__
+global-exclude *.py[co] 

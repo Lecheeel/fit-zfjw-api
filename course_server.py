@@ -1,15 +1,36 @@
-from flask import Flask, request, jsonify
-from JWGL_Client import JWGLClient
-from schedule_manager import ScheduleManager
-import json
+import sys
 import os
+from pathlib import Path
+
+# 添加包路径以支持独立运行
+if __name__ == '__main__':
+    # 当作为脚本直接运行时，添加父目录到sys.path
+    current_dir = Path(__file__).parent
+    parent_dir = current_dir.parent
+    if str(parent_dir) not in sys.path:
+        sys.path.insert(0, str(parent_dir))
+
+from flask import Flask, request, jsonify
+import json
 from datetime import datetime
-from configs.settings import BASE_URL
+
+# 尝试相对导入，如果失败则使用绝对导入
+try:
+    from .JWGL_Client import JWGLClient
+    from .schedule_manager import ScheduleManager
+    from .configs.settings import BASE_URL, START_DATE
+except ImportError:
+    # 作为脚本运行时的绝对导入
+    from fit_zfjw_api.JWGL_Client import JWGLClient
+    from fit_zfjw_api.schedule_manager import ScheduleManager
+    from fit_zfjw_api.configs.settings import BASE_URL, START_DATE
 
 app = Flask(__name__)
 
 def save_to_file(data, filename, indent=None):
     """Save data to a file with indentation."""
+    # 确保目录存在
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
     with open(filename, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=indent)
 
@@ -35,11 +56,20 @@ def get_courses():
     action = data.get('action')
     relogin = data.get('relogin', False)
 
-    # Define the base URL for the JWGL system
-    schedule_file = f'../data/{username}_schedule.json'
+    # 获取当前脚本的目录
+    current_dir = Path(__file__).parent
+    # 确定data目录的位置
+    if current_dir.name == 'fit_zfjw_api':
+        # 如果在fit_zfjw_api目录内运行，data目录在上级目录
+        data_dir = current_dir.parent / 'data'
+    else:
+        # 如果在项目根目录运行，data目录在当前目录
+        data_dir = current_dir / 'data'
+    
+    schedule_file = data_dir / f'{username}_schedule.json'
 
     # Check if the schedule file exists and no relogin is requested
-    if os.path.exists(schedule_file) and not relogin:
+    if schedule_file.exists() and not relogin:
         schedule = load_from_file(schedule_file)
     else:
         # Create an instance of the JWGLClient with user credentials
@@ -52,10 +82,10 @@ def get_courses():
         # Get the schedule and save it
         schedule_response = client.get_schedule()
         schedule = schedule_response.json()
-        save_to_file(schedule, schedule_file, indent=4)
+        save_to_file(schedule, str(schedule_file), indent=4)
 
     # Create ScheduleManager instance
-    manager = ScheduleManager(schedule_file, start_date="2024-08-26")
+    manager = ScheduleManager(str(schedule_file), start_date=START_DATE)
 
     # Perform the requested action
     if action == "today":
@@ -86,7 +116,12 @@ def get_courses():
         else:
             return jsonify({'error': 'Date not provided'}), 400
 
+    elif action == "full_schedule":
+        # 获取完整学期课表
+        full_schedule = manager.get_full_semester_schedule()
+        return jsonify(full_schedule)
+
     return jsonify({'error': 'Invalid action'}), 400
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=8072)

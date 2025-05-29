@@ -1,9 +1,7 @@
 import unittest
-import json
-import os
 from datetime import datetime
-from functions.schedule_manager import ScheduleManager
-from functions.configs.settings import START_DATE
+from fit_zfjw_api.schedule_manager import ScheduleManager
+from fit_zfjw_api.configs.settings import START_DATE
 
 class TestScheduleManager(unittest.TestCase):
 

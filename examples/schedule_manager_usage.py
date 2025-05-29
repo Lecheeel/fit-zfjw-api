@@ -1,4 +1,4 @@
-from functions.schedule_manager import ScheduleManager
+from fit_zfjw_api import ScheduleManager
 from datetime import datetime, time
 # 创建 ScheduleManager 实例
 manager = ScheduleManager("data/schedule.json",start_date="2024-08-26")

@@ -1,6 +1,6 @@
-# Import the JWGLClient class from the JWGL_Client module
-from functions.JWGL_Client import JWGLClient
-from functions.configs.settings import BASE_URL
+# Import the JWGLClient class from the fit_zfjw_api package
+from fit_zfjw_api import JWGLClient
+from fit_zfjw_api.configs.settings import BASE_URL
 import json  # Import the json module
 
 def save_to_file(data, filename, indent=None):

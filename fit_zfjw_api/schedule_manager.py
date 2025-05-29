@@ -75,7 +75,7 @@ class ScheduleManager:
 
     def get_course(self, target_time=None):
         if target_time is None:
-            target_time = datetime.datetime.now()
+            target_time = datetime.now()
         target_date = target_time.date()
         courses = self.get_courses_on_date(target_date)
         current_period = self.get_period(target_time)
@@ -95,3 +95,96 @@ class ScheduleManager:
             if start_time <= current_time <= end_time:
                 return period
         return None
+
+    def get_full_semester_schedule(self):
+        """
+        获取完整学期的课表数据
+        返回格式化的课表信息，包含每门课程的详细信息
+        """
+        full_schedule = []
+        
+        for course in self.schedule:
+            course_info = {
+                'name': course.name,
+                'teacher': course.teacher,
+                'classroom': course.classroom,
+                'weeks': course.weeks,
+                'weekdays': list(course.weekdays),  # 转换为列表便于JSON序列化
+                'periods': course.periods,
+                'formatted_info': {
+                    'weeks_text': self._format_weeks(course.weeks),
+                    'weekdays_text': self._format_weekdays(course.weekdays),
+                    'periods_text': self._format_periods(course.periods),
+                    'time_text': self._format_time_periods(course.periods)
+                }
+            }
+            full_schedule.append(course_info)
+        
+        return {
+            'semester_info': {
+                'start_date': START_DATE,
+                'current_week': self.weeks_diff,
+                'total_courses': len(full_schedule)
+            },
+            'courses': full_schedule
+        }
+    
+    def _format_weeks(self, weeks):
+        """格式化周次显示"""
+        if not weeks:
+            return "无"
+        
+        # 对周次进行排序
+        sorted_weeks = sorted(weeks)
+        
+        # 合并连续的周次
+        ranges = []
+        start = sorted_weeks[0]
+        end = sorted_weeks[0]
+        
+        for week in sorted_weeks[1:]:
+            if week == end + 1:
+                end = week
+            else:
+                if start == end:
+                    ranges.append(f"{start}")
+                else:
+                    ranges.append(f"{start}-{end}")
+                start = end = week
+        
+        # 添加最后一个范围
+        if start == end:
+            ranges.append(f"{start}")
+        else:
+            ranges.append(f"{start}-{end}")
+        
+        return f"{','.join(ranges)}周"
+    
+    def _format_weekdays(self, weekdays):
+        """格式化星期显示"""
+        weekday_names = {
+            1: "周一", 2: "周二", 3: "周三", 4: "周四", 
+            5: "周五", 6: "周六", 7: "周日"
+        }
+        return ",".join([weekday_names.get(day, f"周{day}") for day in sorted(weekdays)])
+    
+    def _format_periods(self, periods):
+        """格式化节次显示"""
+        if not periods:
+            return "无"
+        return f"{min(periods)}-{max(periods)}节"
+    
+    def _format_time_periods(self, periods):
+        """格式化时间段显示"""
+        if not periods:
+            return "无"
+        
+        start_period = min(periods)
+        end_period = max(periods)
+        
+        if start_period in TIME_PERIODS and end_period in TIME_PERIODS:
+            start_time = TIME_PERIODS[start_period][0]
+            end_time = TIME_PERIODS[end_period][1]
+            return f"{start_time.strftime('%H:%M')}-{end_time.strftime('%H:%M')}"
+        
+        return "时间未知"
