@@ -1,14 +1,15 @@
 import requests
 import json
 
-def get_courses(username, password, action, relogin=False, date=None):
+def get_courses(username, password, action, relogin=False, force_update=False, date=None):
     url = 'http://127.0.0.1:8072/get_courses'
     headers = {'Content-Type': 'application/json'}
     data = {
         'username': username,
         'password': password,
         'action': action,
-        'relogin': relogin
+        'relogin': relogin,
+        'force_update': force_update
     }
     if date:
         data['date'] = date
@@ -68,3 +69,7 @@ else:
     print(f"获取完整课表失败: {full_schedule['error']}")
 
 print('='*50)
+
+# 强制更新课表缓存后获取今天的课程
+print('\n强制更新课表后，今天的课程:')
+print(get_courses(username, password, 'today', force_update=True))

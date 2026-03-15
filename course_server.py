@@ -55,6 +55,7 @@ def get_courses():
     password = data.get('password')
     action = data.get('action')
     relogin = data.get('relogin', False)
+    force_update = data.get('force_update', False)
 
     # 获取当前脚本的目录
     current_dir = Path(__file__).parent
@@ -68,8 +69,9 @@ def get_courses():
     
     schedule_file = data_dir / f'{username}_schedule.json'
 
-    # Check if the schedule file exists and no relogin is requested
-    if schedule_file.exists() and not relogin:
+    should_refresh = relogin or force_update
+
+    if schedule_file.exists() and not should_refresh:
         schedule = load_from_file(schedule_file)
     else:
         # Create an instance of the JWGLClient with user credentials
