@@ -16,6 +16,6 @@ TIME_PERIODS = {
     11: (time(20, 10), time(21, 5))
 }
 
-START_DATE = "2025-09-01"
+START_DATE = "2026-03-04"
 
 BASE_URL = 'http://oaa.fitedu.net/jwglxt'

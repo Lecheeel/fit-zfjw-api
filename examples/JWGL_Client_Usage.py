@@ -1,4 +1,9 @@
 # Import the JWGLClient class from the fit_zfjw_api package
+# Add project root to path so this example can be run directly
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 from fit_zfjw_api import JWGLClient
 from fit_zfjw_api.configs.settings import BASE_URL
 import json  # Import the json module
