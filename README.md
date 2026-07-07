@@ -5,6 +5,50 @@ FIT ZFJW API 是一个用于FIT教务系统的Python API包，提供了方便的
 
 ### 安装
 
+#### Debian 13 一键部署
+
+在 Debian 13 服务器上执行以下命令，可自动拉取项目、安装依赖、创建配置文件并配置 systemd 自启动：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Lecheeel/fit-zfjw-api/main/scripts/install-debian13.sh | sudo bash
+```
+
+默认配置：
+
+- 安装目录：`/opt/fit-zfjw-api`
+- 服务名：`fit-zfjw-api.service`
+- 监听地址：`0.0.0.0`
+- 监听端口：`49031`
+- 配置文件：`/opt/fit-zfjw-api/fit-api.env`
+- 数据目录：`/opt/fit-zfjw-api/data`
+
+如需修改端口、学期开始日期或教务系统地址，编辑配置文件后重启服务：
+
+```bash
+sudo nano /opt/fit-zfjw-api/fit-api.env
+sudo systemctl restart fit-zfjw-api.service
+```
+
+配置文件示例：
+
+```bash
+FIT_API_HOST=0.0.0.0
+FIT_API_PORT=49031
+FIT_API_BASE_URL=http://oaa.fitedu.net/jwglxt
+FIT_API_START_DATE=2026-03-04
+FIT_API_DATA_DIR=/opt/fit-zfjw-api/data
+```
+
+常用管理命令：
+
+```bash
+sudo systemctl status fit-zfjw-api.service
+sudo systemctl restart fit-zfjw-api.service
+sudo journalctl -u fit-zfjw-api.service -f
+```
+
+重复执行一键部署命令会更新 `/opt/fit-zfjw-api` 中的代码并重启服务；如果配置文件已存在，脚本不会覆盖现有配置。
+
 #### 从源码安装
 ```bash
 git clone https://github.com/Lecheeel/fit-zfjw-api.git

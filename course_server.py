@@ -2,6 +2,24 @@ import sys
 import os
 from pathlib import Path
 
+
+def load_env_file(env_file):
+    if not env_file.exists():
+        return
+
+    with env_file.open('r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith('#') or '=' not in line:
+                continue
+            key, value = line.split('=', 1)
+            key = key.strip()
+            value = value.strip().strip('"').strip("'")
+            os.environ.setdefault(key, value)
+
+
+load_env_file(Path(__file__).resolve().parent / 'fit-api.env')
+
 # 添加包路径以支持独立运行
 if __name__ == '__main__':
     # 当作为脚本直接运行时，添加父目录到sys.path
@@ -57,15 +75,19 @@ def get_courses():
     relogin = data.get('relogin', False)
     force_update = data.get('force_update', False)
 
-    # 获取当前脚本的目录
-    current_dir = Path(__file__).parent
-    # 确定data目录的位置
-    if current_dir.name == 'fit_zfjw_api':
-        # 如果在fit_zfjw_api目录内运行，data目录在上级目录
-        data_dir = current_dir.parent / 'data'
+    data_dir_config = os.getenv('FIT_API_DATA_DIR')
+    if data_dir_config:
+        data_dir = Path(data_dir_config)
     else:
-        # 如果在项目根目录运行，data目录在当前目录
-        data_dir = current_dir / 'data'
+        # 获取当前脚本的目录
+        current_dir = Path(__file__).parent
+        # 确定data目录的位置
+        if current_dir.name == 'fit_zfjw_api':
+            # 如果在fit_zfjw_api目录内运行，data目录在上级目录
+            data_dir = current_dir.parent / 'data'
+        else:
+            # 如果在项目根目录运行，data目录在当前目录
+            data_dir = current_dir / 'data'
     
     schedule_file = data_dir / f'{username}_schedule.json'
 
@@ -126,4 +148,6 @@ def get_courses():
     return jsonify({'error': 'Invalid action'}), 400
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8072)
+    host = os.getenv('FIT_API_HOST', '0.0.0.0')
+    port = int(os.getenv('FIT_API_PORT', '49031'))
+    app.run(host=host, port=port)

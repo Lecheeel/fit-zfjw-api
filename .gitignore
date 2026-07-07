@@ -76,6 +76,7 @@ celerybeat-schedule
 
 # Environments
 .env
+fit-api.env
 .venv
 env/
 venv/

@@ -1,3 +1,4 @@
+import os
 from datetime import time
 
 # 配置文件: configs/settings.py
@@ -16,6 +17,6 @@ TIME_PERIODS = {
     11: (time(20, 10), time(21, 5))
 }
 
-START_DATE = "2026-03-04"
+START_DATE = os.getenv("FIT_API_START_DATE", "2026-03-04")
 
-BASE_URL = 'http://oaa.fitedu.net/jwglxt'
+BASE_URL = os.getenv("FIT_API_BASE_URL", "http://oaa.fitedu.net/jwglxt")
